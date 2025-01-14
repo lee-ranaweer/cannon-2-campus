@@ -1,7 +1,9 @@
 from flask import Flask, jsonify, request, abort
+from flask_cors import CORS  # Import CORS
 import sqlite3
 
 app = Flask(__name__)
+CORS(app)
 
 def get_db_connection():
     """Helper function to connect to the SQLite database."""
@@ -78,7 +80,6 @@ def update_listing(listing_id):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Build the SQL dynamically based on provided fields
     query = "UPDATE listings SET " + ", ".join(f"{key} = ?" for key in update_fields.keys()) + " WHERE id = ?"
     values = list(update_fields.values()) + [listing_id]
 

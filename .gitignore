@@ -1,2 +1,4 @@
 .venv
 housing_listings.db
+frontend/node_modules
+node_modules
