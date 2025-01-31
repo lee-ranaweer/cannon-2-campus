@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import NavBar from "./components/navbar/NavBar";
+import SearchBar from "./components/search bar/SearchBar";
+import Listings from "./components/house listings/Listings";
 
-function App() {
+export default function App() {
   const [listings, setListings] = useState([]);
   const [error, setError] = useState(null);
 
@@ -18,39 +21,13 @@ function App() {
       });
   }, []);
 
+  console.log(listings);
+
   return (
     <div className="App">
-      <h1>Housing Listings</h1>
-
-      {/* Display error message if there is an error */}
-      {error && <div className="error">{error}</div>}
-
-      <div className="listings">
-        {listings.length === 0 ? (
-          <p>No listings available</p>
-        ) : (
-          listings.map((listing) => (
-            <div key={listing.id} className="listing-card">
-              <h2>{listing.title}</h2>
-              <p>{listing.description}</p>
-              <p>
-                <strong>Price:</strong> ${listing.price}
-              </p>
-              <p>
-                <strong>Type:</strong> {listing.type}
-              </p>
-              <p>
-                <strong>Posted on:</strong> {listing.posted_date}
-              </p>
-              <a href={listing.link} target="_blank" rel="noopener noreferrer">
-                View Listing
-              </a>
-            </div>
-          ))
-        )}
-      </div>
+      <NavBar></NavBar>
+      <SearchBar></SearchBar>
+      <Listings listings={listings}></Listings>
     </div>
   );
 }
-
-export default App;
