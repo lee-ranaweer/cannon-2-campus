@@ -8,7 +8,7 @@ function App() {
   // Fetch listings from Flask API
   useEffect(() => {
     axios
-      .get("http://localhost:5000/listings")
+      .get("http://127.0.0.1:5000/listings/")
       .then((response) => {
         setListings(response.data);
       })
@@ -33,10 +33,18 @@ function App() {
             <div key={listing.id} className="listing-card">
               <h2>{listing.title}</h2>
               <p>{listing.description}</p>
-              <p><strong>Price:</strong> ${listing.price}</p>
-              <p><strong>Type:</strong> {listing.type}</p>
-              <p><strong>Posted on:</strong> {listing.posted_date}</p>
-              <a href={listing.link} target="_blank" rel="noopener noreferrer">View Listing</a>
+              <p>
+                <strong>Price:</strong> ${listing.price}
+              </p>
+              <p>
+                <strong>Type:</strong> {listing.type}
+              </p>
+              <p>
+                <strong>Posted on:</strong> {listing.posted_date}
+              </p>
+              <a href={listing.link} target="_blank" rel="noopener noreferrer">
+                View Listing
+              </a>
             </div>
           ))
         )}

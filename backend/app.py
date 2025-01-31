@@ -1,9 +1,34 @@
-from flask import Flask, jsonify, request, abort
-from flask_cors import CORS  # Import CORS
+from flask import Flask, jsonify, request, abort, redirect
+from flask_cors import CORS
 import sqlite3
 
 app = Flask(__name__)
-CORS(app)
+
+# Updated CORS configuration
+CORS(
+    app,
+    resources={
+        r"/*": {
+            "origins": [
+                "http://localhost:5173",
+                "http://127.0.0.1:5173",
+                "http://localhost:5173/",
+                "http://127.0.0.1:5173/"
+            ],
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization"],
+            "supports_credentials": True,
+            "expose_headers": ["Content-Type"]
+        }
+    }
+)
+
+@app.before_request
+def enforce_trailing_slash():
+    if request.path[-1] != "/" and request.path.startswith("/listings"):
+        return redirect(request.path + "/", code=308)
+
+
 
 def get_db_connection():
     """Helper function to connect to the SQLite database."""
@@ -11,7 +36,8 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row 
     return conn
 
-@app.route("/listings", methods=["GET"])
+
+@app.route("/listings/", methods=["GET"])
 def get_listings():
     """Endpoint to retrieve all listings."""
     conn = get_db_connection()
@@ -24,7 +50,8 @@ def get_listings():
     result = [dict(row) for row in listings]
     return jsonify(result)
 
-@app.route("/listings/<int:listing_id>", methods=["GET"])
+
+@app.route("/listings/<int:listing_id>/", methods=["GET"])
 def get_listing(listing_id):
     """Endpoint to retrieve a single listing by its ID."""
     conn = get_db_connection()
@@ -39,7 +66,8 @@ def get_listing(listing_id):
 
     return jsonify(dict(listing))
 
-@app.route("/listings", methods=["POST"])
+
+@app.route("/listings/", methods=["POST"])
 def create_listing():
     """Endpoint to add a new listing."""
     if not request.json or not all(key in request.json for key in ("title", "link", "posted_date", "type", "price", "description")):
@@ -67,7 +95,8 @@ def create_listing():
 
     return jsonify({"id": listing_id}), 201
 
-@app.route("/listings/<int:listing_id>", methods=["PUT"])
+
+@app.route("/listings/<int:listing_id>/", methods=["PUT"])
 def update_listing(listing_id):
     """Endpoint to update an existing listing."""
     if not request.json:
@@ -89,7 +118,8 @@ def update_listing(listing_id):
 
     return jsonify({"message": "Listing updated successfully"})
 
-@app.route("/listings/<int:listing_id>", methods=["DELETE"])
+
+@app.route("/listings/<int:listing_id>/", methods=["DELETE"])
 def delete_listing(listing_id):
     """Endpoint to delete a listing."""
     conn = get_db_connection()
@@ -104,5 +134,6 @@ def delete_listing(listing_id):
 
     return jsonify({"message": "Listing deleted successfully"})
 
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)  # Changed line
