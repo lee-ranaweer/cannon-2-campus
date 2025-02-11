@@ -78,3 +78,9 @@
   font-size: 24px;
   color: #666;
 }
+
+@media screen and (max-width: 600px) {
+  .navbar {
+    display: none;
+  }
+}

@@ -21,7 +21,7 @@ export default function HouseCard({ title, posted_date, price, image }) {
         <p className="house-distance">{"10km"} away</p>
         <p className="house-date">{posted_date}</p>
         <p className="house-price">
-          <strong>{price} CAD night</strong>
+          <strong>{price}/Month</strong>
         </p>
         <div className="house-rating">
           <FaStar className="star-icon" />
