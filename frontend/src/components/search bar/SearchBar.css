@@ -2,6 +2,10 @@
   display: flex;
   justify-content: center;
   padding: 20px 0;
+  /* Use sticky positioning so the element stays fixed at 20px from the top */
+  position: sticky;
+  top: 20px;
+  z-index: 1000;
 }
 
 .search-container {
@@ -22,25 +26,6 @@
   padding: 8px;
   font-size: 14px;
   color: #333;
-}
-
-.search-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0 15px;
-  border-left: 1px solid #ddd;
-}
-
-.search-label {
-  font-size: clamp(10px, 1.5vw, 12px);
-  color: gray;
-}
-
-.search-value {
-  font-size: clamp(10px, 1.5vw, 14px);
-  white-space: nowrap;
-  color: black;
 }
 
 .search-button {
