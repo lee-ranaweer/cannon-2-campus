@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import "./HouseDetail.css"; // Make sure to update this CSS file accordingly
+import "./HouseDetail.css"; // Make sure this file uses the updated class names below
 
 export default function HouseDetail() {
   const { id } = useParams();
@@ -9,10 +9,8 @@ export default function HouseDetail() {
   const [drivingTime, setDrivingTime] = useState(null);
   const [error, setError] = useState(null);
 
-  // Coordinates for the University of Guelph (example values)
-  const universityCoords = { lat: 43.5448, lng: -80.2482 };
-  // Replace with your actual Google API key
-  const googleApiKey = "YOUR_GOOGLE_API_KEY";
+  const universityAddress = "50 Stone Rd E, Guelph, ON N1G 2W1";
+  const googleApiKey = "APIKEYHERE";
 
   // Fetch listing details from your Flask API
   useEffect(() => {
@@ -27,30 +25,6 @@ export default function HouseDetail() {
       });
   }, [id]);
 
-  // Once the listing is loaded and if lat/lng are available, fetch driving time
-  useEffect(() => {
-    if (listing && listing.lat && listing.lng) {
-      axios
-        .get("https://maps.googleapis.com/maps/api/directions/json", {
-          params: {
-            origin: `${listing.lat},${listing.lng}`,
-            destination: `${universityCoords.lat},${universityCoords.lng}`,
-            mode: "driving",
-            key: googleApiKey,
-          },
-        })
-        .then((response) => {
-          if (response.data.routes.length > 0) {
-            const duration = response.data.routes[0].legs[0].duration.text;
-            setDrivingTime(duration);
-          }
-        })
-        .catch((err) => {
-          console.error("Error fetching directions", err);
-        });
-    }
-  }, [listing, universityCoords.lat, universityCoords.lng, googleApiKey]);
-
   if (error) return <div>{error}</div>;
   if (!listing) return <div>Loading...</div>;
 
@@ -59,8 +33,10 @@ export default function HouseDetail() {
     listing.image_url
   )}`;
 
-  // Create a Google Maps embed URL for directions from the house to the University
-  const mapEmbedUrl = `https://www.google.com/maps/embed/v1/directions?key=${googleApiKey}&origin=${listing.lat},${listing.lng}&destination=${universityCoords.lat},${universityCoords.lng}&mode=driving`;
+  // Create a Google Maps embed URL for directions from the house (using listing.title as the origin)
+  const mapEmbedUrl = `https://www.google.com/maps/embed/v1/directions?key=${googleApiKey}&origin=${encodeURIComponent(
+    listing.title
+  )}&destination=${encodeURIComponent(universityAddress)}&mode=driving`;
 
   return (
     <div className="detail-container">
@@ -68,27 +44,22 @@ export default function HouseDetail() {
         {/* Left Column: House Image, Title, and Description */}
         <div className="detail-left-column">
           <img src={proxyUrl} alt={listing.title} className="detail-image" />
-          <h2 className="detail-title">{listing.title}</h2>
-          <p className="detail-description">{listing.description}</p>
         </div>
 
-        {/* Right Column: Map and Driving Time */}
+        {/* Right Column: Map*/}
         <div className="detail-right-column">
           <iframe
             title="Route to University of Guelph"
             src={mapEmbedUrl}
-            width="100%"
-            height="300"
-            style={{ border: 0, borderRadius: "8px" }}
-            allowFullScreen=""
+            className="detail-map"
+            allowFullScreen={false}
             loading="lazy"
           ></iframe>
-          {drivingTime && (
-            <p className="detail-driving-time">
-              Driving Time to University of Guelph: {drivingTime}
-            </p>
-          )}
         </div>
+      </div>
+      <div className="detail-bottom-section">
+        <h2 className="detail-title">{listing.title}</h2>
+        <p className="detail-description">{listing.description}</p>
       </div>
     </div>
   );
