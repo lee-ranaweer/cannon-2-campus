@@ -15,6 +15,7 @@
 .house-image-container {
   position: relative;
   width: 100%;
+  min-height: 220px; /* Keeps the space reserved for the image */
 }
 
 .house-image {
@@ -23,6 +24,11 @@
   object-fit: cover;
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
+}
+
+/* Optional: Add a background color to the image container for when the image is missing */
+.house-image-container:empty {
+  background-color: #f0f0f0; /* Light gray or another color you prefer */
 }
 
 .guest-favorite {

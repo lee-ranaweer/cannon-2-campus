@@ -12,14 +12,28 @@ def scrape_page(url):
     soup = BeautifulSoup(response.content, "html.parser")
     listings = []
     
-    # Select all <div class="details"> elements
-    for listing in soup.select("div.details"):
-        title = listing.select_one("h2 a").get_text(strip=True) if listing.select_one("h2 a") else "N/A"
-        link = listing.select_one("h2 a")["href"] if listing.select_one("h2 a") else "N/A"
-        posted_date = listing.select_one(".post-date dd").get_text(strip=True) if listing.select_one(".post-date dd") else "N/A"
-        listing_type = listing.select_one(".type dd").get_text(strip=True) if listing.select_one(".type dd") else "N/A"
-        price = listing.select_one(".price dd").get_text(strip=True) if listing.select_one(".price dd") else "N/A"
-        description = listing.select_one(".description").get_text(strip=True) if listing.select_one(".description") else "N/A"
+    # Loop through each housing item (li with class "housing-item")
+    for item in soup.select("li.housing-item"):
+        # Attempt to extract the image URL using the original selector
+        img_tag = item.select_one("div.listing-photo img")
+        if not img_tag:
+            # If not found, try a simpler approach: grab the first <img> in the item
+            img_tag = item.find("img")
+        
+        image_url = img_tag.get("src", "N/A") if img_tag else "N/A"
+        print("Image URL extracted:", image_url)  # Debug print
+        
+        # Extract the details from the details div
+        details = item.select_one("div.details")
+        if not details:
+            continue  # Skip if no details found
+
+        title = details.select_one("h2 a").get_text(strip=True) if details.select_one("h2 a") else "N/A"
+        link = details.select_one("h2 a")["href"] if details.select_one("h2 a") else "N/A"
+        posted_date = details.select_one(".post-date dd").get_text(strip=True) if details.select_one(".post-date dd") else "N/A"
+        listing_type = details.select_one(".type dd").get_text(strip=True) if details.select_one(".type dd") else "N/A"
+        price = details.select_one(".price dd").get_text(strip=True) if details.select_one(".price dd") else "N/A"
+        description = details.select_one(".description").get_text(strip=True) if details.select_one(".description") else "N/A"
         
         # Append extracted data as a dictionary
         listings.append({
@@ -29,6 +43,7 @@ def scrape_page(url):
             "type": listing_type,
             "price": price,
             "description": description,
+            "image_url": image_url,
         })
     
     return listings
@@ -38,7 +53,7 @@ def save_to_db(listings, db_name="housing_listings.db"):
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
     
-    # Create a table if it doesn't exist
+    # Create a table if it doesn't exist (including an image_url column)
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS listings (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -47,16 +62,17 @@ def save_to_db(listings, db_name="housing_listings.db"):
         posted_date TEXT,
         type TEXT,
         price TEXT,
-        description TEXT
+        description TEXT,
+        image_url TEXT
     )
     """)
     
     # Insert listings into the database
     for listing in listings:
         cursor.execute("""
-        INSERT INTO listings (title, link, posted_date, type, price, description)
-        VALUES (?, ?, ?, ?, ?, ?)
-        """, (listing["title"], listing["link"], listing["posted_date"], listing["type"], listing["price"], listing["description"]))
+        INSERT INTO listings (title, link, posted_date, type, price, description, image_url)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, (listing["title"], listing["link"], listing["posted_date"], listing["type"], listing["price"], listing["description"], listing["image_url"]))
     
     conn.commit()
     conn.close()

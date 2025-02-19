@@ -48,12 +48,12 @@
   color: white;
   border: none;
   padding: 10px;
-  border-radius: 50%;
+  border-radius: 30px;
   cursor: pointer;
   margin-left: 15px;
   transition: background 0.3s;
   height: 40px;
-  width: 40px;
+  width: 100px;
   display: flex;
   justify-content: center;
   align-items: center;
