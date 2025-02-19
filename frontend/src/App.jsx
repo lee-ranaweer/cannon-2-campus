@@ -1,8 +1,13 @@
+// src/App.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NavBar from "./components/navbar/NavBar";
 import SearchBar from "./components/search bar/SearchBar";
 import Listings from "./components/house listings/Listings";
+import HouseDetail from "./components/house details/HouseDetail";
+
+import "./App.css";
 
 export default function App() {
   const [listings, setListings] = useState([]);
@@ -21,13 +26,16 @@ export default function App() {
       });
   }, []);
 
-  console.log(listings);
-
   return (
-    <div className="App">
-      <NavBar></NavBar>
-      <SearchBar></SearchBar>
-      <Listings listings={listings}></Listings>
-    </div>
+    <Router>
+      <div className="App">
+        <NavBar />
+        <SearchBar />
+        <Routes>
+          <Route path="/" element={<Listings listings={listings} />} />
+          <Route path="/listings/:id" element={<HouseDetail />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }

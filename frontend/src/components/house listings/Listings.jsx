@@ -61,7 +61,7 @@ export default function Listings({ listings }) {
     <div className="listings-container">
       <div className="house-listings">
         {currentListings.map((house, index) => (
-          <HouseCard key={index} {...house} />
+          <HouseCard key={index} id={house.id} {...house} />
         ))}
       </div>
       <div className="pagination">

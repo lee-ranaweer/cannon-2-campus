@@ -1,0 +1,45 @@
+/* House Detail Styles */
+.detail-container {
+  padding: 20px;
+}
+
+.detail-top-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.detail-left-column,
+.detail-right-column {
+  flex: 1 1 300px; /* Allows columns to shrink/grow, with a minimum width */
+  max-width: 600px;
+}
+
+.detail-image {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.detail-title {
+  margin-top: 15px;
+  font-size: 1.8em;
+  font-weight: bold;
+  color: #333;
+}
+
+.detail-description {
+  margin-top: 10px;
+  font-size: 1.1em;
+  line-height: 1.6;
+  color: #555;
+}
+
+.detail-driving-time {
+  margin-top: 10px;
+  font-size: 1.2em;
+  font-weight: 500;
+  color: #333;
+}

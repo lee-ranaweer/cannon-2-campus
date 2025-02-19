@@ -85,3 +85,9 @@
   color: gold;
   margin-right: 5px;
 }
+
+.house-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block; /* Ensures the entire card is clickable without inheriting link styling */
+}
