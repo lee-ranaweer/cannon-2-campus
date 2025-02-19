@@ -4,3 +4,32 @@
   gap: 20px;
   padding: 20px;
 }
+
+/* Pagination styling */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  gap: 10px;
+}
+
+.pagination-button {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background-color: #eee;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 14px;
+}
+
+.pagination-button:hover {
+  background-color: #ddd;
+}
+
+.pagination-button.active {
+  background-color: #ff385c;
+  color: #fff;
+}
