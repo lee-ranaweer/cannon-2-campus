@@ -4,9 +4,10 @@ import "./Listings.css";
 
 export default function Listings({ listings }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const listingsPerPage = 60;
+  const listingsPerPage = 30;
+  const totalPages = Math.ceil(listings.length / listingsPerPage);
 
-  // Determine the indices for slicing the listings array.
+  // Determine the listings to display on the current page.
   const indexOfLastListing = currentPage * listingsPerPage;
   const indexOfFirstListing = indexOfLastListing - listingsPerPage;
   const currentListings = listings.slice(
@@ -14,13 +15,47 @@ export default function Listings({ listings }) {
     indexOfLastListing
   );
 
-  // Calculate total number of pages.
-  const totalPages = Math.ceil(listings.length / listingsPerPage);
+  // Generate pagination buttons with ellipsis when there are too many pages.
+  const getPaginationItems = () => {
+    const pages = [];
 
-  // Handle page button click.
-  const handlePageClick = (pageNumber) => {
-    setCurrentPage(pageNumber);
+    // If 13 or fewer pages, show all.
+    if (totalPages <= 13) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // More than 13 pages—let's create a sliding window.
+      if (currentPage <= 7) {
+        // Near the beginning: show pages 1 to 10, ellipsis, and last page.
+        for (let i = 1; i <= 10; i++) {
+          pages.push(i);
+        }
+        pages.push("ellipsis");
+        pages.push(totalPages);
+      } else if (currentPage >= totalPages - 6) {
+        // Near the end: show first page, ellipsis, then last 10 pages.
+        pages.push(1);
+        pages.push("ellipsis");
+        for (let i = totalPages - 9; i <= totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        // Somewhere in the middle: show first page, ellipsis,
+        // a window of 7 pages, ellipsis, then the last page.
+        pages.push(1);
+        pages.push("ellipsis");
+        for (let i = currentPage - 3; i <= currentPage + 3; i++) {
+          pages.push(i);
+        }
+        pages.push("ellipsis");
+        pages.push(totalPages);
+      }
+    }
+    return pages;
   };
+
+  const paginationItems = getPaginationItems();
 
   return (
     <div className="listings-container">
@@ -30,17 +65,26 @@ export default function Listings({ listings }) {
         ))}
       </div>
       <div className="pagination">
-        {Array.from({ length: totalPages }, (_, i) => (
-          <button
-            key={i}
-            className={`pagination-button ${
-              currentPage === i + 1 ? "active" : ""
-            }`}
-            onClick={() => handlePageClick(i + 1)}
-          >
-            {i + 1}
-          </button>
-        ))}
+        {paginationItems.map((item, idx) => {
+          if (item === "ellipsis") {
+            return (
+              <span key={idx} className="pagination-ellipsis">
+                &hellip;
+              </span>
+            );
+          }
+          return (
+            <button
+              key={idx}
+              className={`pagination-button ${
+                currentPage === item ? "active" : ""
+              }`}
+              onClick={() => setCurrentPage(item)}
+            >
+              {item}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
