@@ -12,7 +12,7 @@ export default function HouseCard({ title, posted_date, price, image_url }) {
     <div className="house-card">
       {/* Image Section */}
       <div className="house-image-container">
-        <img src={proxyUrl} alt="" className="house-image" />;
+        <img src={proxyUrl} alt="" className="house-image" />
         <span className="guest-favorite">Guest favourite</span>
         <FaHeart className="heart-icon" />
       </div>
